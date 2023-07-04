@@ -17,6 +17,7 @@ class Campo {
   bool get marcado => _marcado;
   bool get vizinhancaSegura => vizinhos.every((v) => !v._minado);
   bool get resolvido => _minado && _marcado || !_minado && _aberto;
+  bool get explodido => _minado && _aberto;
 
   int get qtdeMinasNaVizinhanca => vizinhos.where((v) => v.minado).length;
 
