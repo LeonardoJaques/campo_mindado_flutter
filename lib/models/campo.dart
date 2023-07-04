@@ -11,6 +11,7 @@ class Campo {
   bool _marcado = false;
   bool _explodido = false;
 
+  bool get aberto => _aberto;
   bool get minado => _minado;
   bool get explidido => _explodido;
   bool get marcado => _marcado;
@@ -47,6 +48,10 @@ class Campo {
 
   void alterarMarcacao() {
     if (!_aberto) _marcado = !_marcado;
+  }
+
+  void minar() {
+    _minado = true;
   }
 
   void reiniciar() {
