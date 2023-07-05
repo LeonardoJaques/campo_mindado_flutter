@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:campo_minado_flutter/components/resultado_widget.dart';
 import 'package:campo_minado_flutter/models/campo.dart';
 import 'package:campo_minado_flutter/models/tabuleiro.dart';
@@ -16,18 +18,16 @@ class CampoMinadoApp extends StatefulWidget {
 class _CampoMinadoAppState extends State<CampoMinadoApp> {
   bool _venceu = false;
   bool _perdeu = false;
-  Tabuleiro _tabuleiro = Tabuleiro(
-    linhas: 15,
-    colunas: 15,
-    qtdeBombas: 50,
-  );
 
-  Tabuleiro getTabuleiro(double largura, double altura) {
-    int qtdColunas = 15;
-    double tamanhoCampo = largura / qtdColunas;
-    int qtdLinhas = (altura / tamanhoCampo).floor();
-    return _tabuleiro;
-  }
+  final Tabuleiro _tabuleiro = Tabuleiro(
+    linhas: min(
+        26,
+        WidgetsBinding
+            .instance.platformDispatcher.views.first.physicalSize.height
+            .toInt()),
+    colunas: 15,
+    qtdeBombas: 3,
+  );
 
   _reiniciar() {
     setState(() {
@@ -71,13 +71,11 @@ class _CampoMinadoAppState extends State<CampoMinadoApp> {
             onReiniciar: _reiniciar,
           ),
           body: Container(
+            color: Colors.grey,
             child: LayoutBuilder(
               builder: (ctx, constraints) {
                 return TabuleiroWidget(
-                  tabuleiro: getTabuleiro(
-                    constraints.maxWidth,
-                    constraints.maxHeight,
-                  ),
+                  tabuleiro: _tabuleiro,
                   onAbrir: _abrir,
                   onAlternarMarcacao: _alternarMarcacao,
                 );
