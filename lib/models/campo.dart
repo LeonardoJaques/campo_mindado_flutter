@@ -7,7 +7,6 @@ class Campo {
 
   bool _aberto = false;
   bool _minado = false;
-  bool _maximo = false;
   bool _marcado = false;
   bool _explodido = false;
 
@@ -58,7 +57,6 @@ class Campo {
   void reiniciar() {
     _aberto = false;
     _minado = false;
-    _maximo = false;
     _marcado = false;
     _explodido = false;
   }

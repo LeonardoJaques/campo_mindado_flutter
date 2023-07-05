@@ -6,7 +6,7 @@ void main() {
   test(
       "Deve retornar verdade quando o jogo for ganho",
       () => {
-            tabuleiro = new Tabuleiro(
+            tabuleiro = Tabuleiro(
               linhas: 2,
               colunas: 2,
               qtdeBombas: 0,

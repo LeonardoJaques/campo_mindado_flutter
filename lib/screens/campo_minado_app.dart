@@ -4,19 +4,61 @@ import 'package:campo_minado_flutter/models/tabuleiro.dart';
 import 'package:campo_minado_flutter/screens/tabuleiro_widget.dart';
 import 'package:flutter/material.dart';
 
-class CampoMinadoApp extends StatelessWidget {
+import '../models/explosao_exception.dart';
+
+class CampoMinadoApp extends StatefulWidget {
   const CampoMinadoApp({super.key});
 
+  @override
+  State<CampoMinadoApp> createState() => _CampoMinadoAppState();
+}
+
+class _CampoMinadoAppState extends State<CampoMinadoApp> {
+  bool _venceu = false;
+  bool _perdeu = false;
+  Tabuleiro _tabuleiro = Tabuleiro(
+    linhas: 15,
+    colunas: 15,
+    qtdeBombas: 50,
+  );
+
+  Tabuleiro getTabuleiro(double largura, double altura) {
+    int qtdColunas = 15;
+    double tamanhoCampo = largura / qtdColunas;
+    int qtdLinhas = (altura / tamanhoCampo).floor();
+    return _tabuleiro;
+  }
+
   _reiniciar() {
-    print('Reiniciar...');
+    setState(() {
+      _venceu = false;
+      _perdeu = false;
+      _tabuleiro.reiniciar();
+    });
   }
 
-  _abrir(Campo c) {
-    print('Abrir...');
+  _abrir(Campo campo) {
+    setState(() {
+      if (_perdeu) return;
+      try {
+        campo.abrir();
+        if (_tabuleiro.resolvido) {
+          _venceu = true;
+        }
+      } on ExplosaoException {
+        _perdeu = true;
+        _tabuleiro.revelarBombas();
+      }
+    });
   }
 
-  _alternarMarcacao(Campo c) {
-    print('Alternar Marcação...');
+  _alternarMarcacao(Campo campo) {
+    setState(() {
+      campo.alterarMarcacao();
+      if (_tabuleiro.resolvido) {
+        _venceu = true;
+      }
+    });
   }
 
   @override
@@ -24,19 +66,22 @@ class CampoMinadoApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
           appBar: ResultadoWidget(
-            venceu: false,
-            perdeu: false,
+            venceu: _venceu,
+            perdeu: !_venceu && _perdeu,
             onReiniciar: _reiniciar,
           ),
           body: Container(
-            child: TabuleiroWidget(
-              tabuleiro: Tabuleiro(
-                linhas: 15,
-                colunas: 15,
-                qtdeBombas: 10,
-              ),
-              onAbrir: _abrir,
-              onAlternarMarcacao: _alternarMarcacao,
+            child: LayoutBuilder(
+              builder: (ctx, constraints) {
+                return TabuleiroWidget(
+                  tabuleiro: getTabuleiro(
+                    constraints.maxWidth,
+                    constraints.maxHeight,
+                  ),
+                  onAbrir: _abrir,
+                  onAlternarMarcacao: _alternarMarcacao,
+                );
+              },
             ),
           )),
     );
